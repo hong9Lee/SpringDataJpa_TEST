@@ -1,10 +1,14 @@
 package com.data.jpa.datajpa.repository;
 
+import com.data.jpa.datajpa.domain.Gender;
 import com.data.jpa.datajpa.domain.User;
+import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
+
+import java.time.LocalDateTime;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.endsWith;
@@ -102,4 +106,98 @@ class UserRepositoryTest {
         userRepository.save(user);
     }
 
+
+    @Test
+    void select() {
+        /*
+        System.out.println(userRepository.findByName("dennis"));
+        System.out.println("userRepository.findByEmail(\"martin@fastcampus.com\") = " + userRepository.findByEmail("martin@fastcampus.com"));
+        System.out.println("userRepository.getByEmail(\"martin@fastcampus.com\") = " + userRepository.getByEmail("martin@fastcampus.com"));
+        System.out.println("userRepository.readByEmail(\"martin@fastcampus.com\") = " + userRepository.readByEmail("martin@fastcampus.com"));
+        System.out.println("userRepository.queryByEmail(\"martin@fastcampus.com\") = " + userRepository.queryByEmail("martin@fastcampus.com"));
+        System.out.println("userRepository.searchByEmail(\"martin@fastcampus.com\") = " + userRepository.searchByEmail("martin@fastcampus.com"));
+        System.out.println("userRepository.streamByEmail(\"martin@fastcampus.com\") = " + userRepository.streamByEmail("martin@fastcampus.com"));
+        System.out.println("userRepository.findUserByEmail(\"martin@fastcampus.com\") = " + userRepository.findUserByEmail("martin@fastcampus.com"));
+
+        System.out.println("userRepository.findTop2ByName(\"martin\") = " + userRepository.findTop2ByName("martin"));
+        System.out.println("userRepository.findFirst1ByName(\"martin\") = " + userRepository.findFirst1ByName("martin"));
+        System.out.println("userRepository.findLast1ByName(\"martin\") = " + userRepository.findLast1ByName("martin"));
+
+
+        System.out.println("userRepository = " + userRepository.findByEmailAndName("martin@fastcampus.com", "martin")) ;
+        System.out.println("userRepository = " + userRepository.findByEmailOrName("martin@fastcampus.com", "martin2")) ;
+        System.out.println("userRepository = " + userRepository.findByCreatedAtAfter(LocalDateTime.now().minusDays(1L))) ;
+        System.out.println("userRepository.findByIdAfter = " + userRepository.findByIdAfter(4L));
+        System.out.println("userRepository.findByCreatedAtGreaterThan = " + userRepository.findByCreatedAtGreaterThan(LocalDateTime.now().minusDays(1L)));
+        System.out.println("userRepository.findByCreatedAtGreaterThanEqual = " + userRepository.findByCreatedAtGreaterThanEqual(LocalDateTime.now().minusDays(1L)));
+        System.out.println("userRepository.findByCreatedAtBetween = " + userRepository.findByCreatedAtBetween(LocalDateTime.now().minusDays(1L), LocalDateTime.now().plusDays(1L)));
+        System.out.println("userRepository.findByIdBetween = " + userRepository.findByIdBetween(1L, 3L));
+        System.out.println("userRepository.findByIdGreaterThanEqualAndIdLessThanEqual(1L, 3L) = " + userRepository.findByIdGreaterThanEqualAndIdLessThanEqual(1L, 3L));
+
+
+        System.out.println("userRepository.findByIdIsNotNull() = " + userRepository.findByIdIsNotNull());
+        System.out.println("userRepository.findByIdIsNotEmpty() = " + userRepository.findByAddressIsNotEmpty());
+
+        System.out.println("userRepository.findByNameIn(Lists.newArrayList(\"martin\", \"dennis\")) = " + userRepository.findByNameIn(Lists.newArrayList("martin", "dennis")));
+        System.out.println("userRepository.findByNameStartingWith(\"mar\") = " + userRepository.findByNameStartingWith("mar"));
+        System.out.println("userRepository.findByNameEndingWith(\"mar\") = " + userRepository.findByNameEndingWith("tin"));
+        System.out.println("userRepository.findByNameContains(\"mar\") = " + userRepository.findByNameContains("ar"));
+        System.out.println("userRepository.findByNameLike(\"%n2%\") = " + userRepository.findByNameLike("%n2%"));
+         */
+
+    }
+
+    @Test
+    void pagingAndSortingTest() {
+        /*
+        System.out.println("userRepository.findTop1ByNameOrderByIdDesc(\"martin\") = " + userRepository.findTop1ByNameOrderByIdDesc("martin"));
+        System.out.println("userRepository.findFirstByNameOrderByIdDescEmailAsc(\"martin\") = " + userRepository.findFirstByNameOrderByIdDescEmailAsc("martin"));
+
+
+
+//        System.out.println("userRepository.findFirstByName(\"martin\", Sort.by(Sort.Order.desc(\"id\"))) = " +
+//                userRepository.findFirstByName("martin", Sort.by(Sort.Order.desc("id"), Sort.Order.asc("email") )));
+
+        System.out.println("userRepository.findFirstByName(\"martin\", Sort.by(Sort.Order.desc(\"id\"))) = " +
+                userRepository.findFirstByName("martin", getSort()));
+
+
+         */
+
+        System.out.println("userRepository.findByName(\"martin\",, PageRequest.of(0, 1, Sort.by(Sort.Order.desc(\"id\")))) = "
+                + userRepository.findByName("martin", PageRequest.of(0, 1, Sort.by(Sort.Order.desc("id")))).getTotalElements());
+
+    }
+
+    @Test
+    void insertAndUpdateTest() {
+        User user = new User();
+
+        user.setName("martin");
+        user.setEmail("hong@naver.com");
+
+        userRepository.save(user);
+
+        User user2 = userRepository.findById(1L).orElseThrow(RuntimeException::new);
+        user2.setName("hong");
+
+        userRepository.save(user2);
+    }
+
+    @Test
+    void enumTest() {
+        User user = userRepository.findById(1L).orElseThrow(RuntimeException::new);
+        user.setGender(Gender.MALE);
+
+        userRepository.save(user);
+        userRepository.findAll().forEach(System.out::println);
+        System.out.println("userRepository = " + userRepository.findRowRecord().get("gender"));
+    }
+
+    private Sort getSort() {
+        return Sort.by(
+                Sort.Order.desc("id"),
+                        Sort.Order.asc("email")
+        );
+    }
 }

@@ -2,10 +2,9 @@ package com.data.jpa.datajpa.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 //@Getter
 //@Setter
@@ -17,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 @Entity
+@Table(name = "user", indexes = {@Index(columnList = "name")}, uniqueConstraints = {@UniqueConstraint(columnNames = {"email"})})
 public class User {
 
     @Id
@@ -29,8 +29,19 @@ public class User {
     @NonNull
     private String email;
 
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
+//    @Column(insertable = false)
     private LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+    @Transient // 영속성 처리에 제외됨.
+    private String testData;
+
+//    @OneToMany(fetch = FetchType.EAGER)
+//    private List<Address> address;
 
 }
