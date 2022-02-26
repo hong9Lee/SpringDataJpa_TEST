@@ -2,6 +2,7 @@ package com.data.jpa.datajpa.repository;
 
 import com.data.jpa.datajpa.domain.Gender;
 import com.data.jpa.datajpa.domain.User;
+import com.data.jpa.datajpa.domain.UserHistory;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
 import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.endsWith;
@@ -251,6 +253,33 @@ class UserRepositoryTest {
         userHistoryRepository.findAll().forEach(System.out::println);
 
 
+    }
+
+    @Test
+    void userRelationTest() {
+        User user = new User();
+        user.setName("david");
+        user.setEmail("david@fastcampus.com");
+        user.setGender(Gender.MALE);
+
+        userRepository.save(user);
+
+        user.setName("daniel");
+        userRepository.save(user);
+
+        user.setEmail("daniel@fastcampus.com");
+        userRepository.save(user);
+
+//        List<UserHistory> result = userHistoryRepository
+//                .findByUserId(
+//                        userRepository.findByEmail("daniel@fastcampus.com").getId());
+
+        List<UserHistory> result = userRepository.findByEmail("daniel@fastcampus.com").getUserHistories();
+        result.forEach(System.out::println);
+
+
+
+        System.out.println("UserHistory.getUser() : " + userHistoryRepository.findAll().get(0).getUser());
     }
 
 
