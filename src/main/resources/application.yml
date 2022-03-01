@@ -8,4 +8,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+    generate-ddl: true # 테이블 자동 생성
+    hibernate:
+      ddl-auto: create-drop
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/book_manager
+    username: root
+    password: 102030
+    initialization-mode: always # data.sql loding
+server:
   port: 8070
