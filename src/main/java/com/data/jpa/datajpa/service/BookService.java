@@ -7,7 +7,10 @@ import com.data.jpa.datajpa.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +19,10 @@ public class BookService {
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
 
+    private final EntityManager entityManager;
+
     @Transactional
-    public void putBookAndAuthor() {
+    public void putBookAndAuthor(){
         Book book = new Book();
         book.setName("JPA 시작하기");
 
@@ -27,7 +32,24 @@ public class BookService {
         author.setName("martin");
 
         authorRepository.save(author);
+        throw new RuntimeException("오류가 나서 DB commit이 발생하지 않았습니다.");
+//        throw new Exception("오류가 나서 DB commit이 발생하지 않았습니다.");
     }
 
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    public void get(Long id) {
+        System.out.println(" >>>>> " + bookRepository.findById(id));
+        System.out.println(" >>>>> " + bookRepository.findAll());
+
+        entityManager.clear();
+
+        System.out.println("bookRepository = " + bookRepository.findById(id));
+        System.out.println(" >>>>> " + bookRepository.findAll());
+
+        bookRepository.update();
+
+        entityManager.clear();
+
+    }
 
 }
