@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,6 +23,7 @@ import java.util.List;
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 //@EntityListeners(value = AuditingEntityListener.class)
+@Where(clause = "deleted = false")
 public class Book extends BaseEntity {
 
     @Id
@@ -43,7 +45,8 @@ public class Book extends BaseEntity {
     @ToString.Exclude
     private List<Review> reviwes = new ArrayList<>();
 
-    @ManyToOne
+//    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToOne(cascade = { CascadeType.ALL })
     @ToString.Exclude
     private Publisher publisher;
 
@@ -57,6 +60,7 @@ public class Book extends BaseEntity {
         Collections.addAll(this.bookAndAuthors, bookAndAuthors);
     }
 
+    private boolean deleted;
 
     //현업에서는
 //    public void addAuthor(Author... author) {

@@ -19,7 +19,8 @@ class BookServiceTest {
     @Autowired
     private AuthorRepository authorRepository;
 
-    @Test
+
+    @Test()
     void transactionTest() {
         try {
             bookService.putBookAndAuthor();
