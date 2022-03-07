@@ -8,10 +8,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.Tuple;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface BookRepository extends JpaRepository<Book, Long> {
 
@@ -37,4 +39,15 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     @Query(value = "select new com.data.jpa.datajpa.repository.dto.BookNameAndCategory(b.name, b.category) from Book b")
     Page<BookNameAndCategory> findBookNameAndCategory(Pageable pageable);
+
+    @Query(value = "select * from book", nativeQuery = true)
+    List<Book> findAllCustom();
+
+    @Transactional
+    @Modifying
+    @Query(value = "update book set category = 'IT전문서'", nativeQuery = true)
+    int updateCategories();
+
+    @Query(value = "select * from book order by id desc limit 1", nativeQuery = true)
+    Map<String, Object> findRawRecord();
 }

@@ -4,6 +4,7 @@ import com.data.jpa.datajpa.domain.Book;
 import com.data.jpa.datajpa.domain.Publisher;
 import com.data.jpa.datajpa.domain.Review;
 import com.data.jpa.datajpa.domain.User;
+import com.data.jpa.datajpa.repository.dto.BookStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @SpringBootTest
 public class BookRepositoryTest {
@@ -126,6 +128,34 @@ public class BookRepositoryTest {
         bookRepository.findBookNameAndCategory(PageRequest.of(0, 1)).forEach(b -> {
             System.out.println(b.getCategory() + " : " +  b.getName());
         });
+    }
+
+    @Test
+    void nativeQueryTest() {
+//        bookRepository.findAll().forEach(System.out::println);
+//        bookRepository.findAllCustom().forEach(System.out::println);
+
+//        List<Book> books = bookRepository.findAll();
+//
+//        for (Book book : books) {
+//            book.setCategory("IT전문서");
+//        }
+//        bookRepository.saveAll(books);
+//        System.out.println("bookRepository = " + bookRepository.findAll());
+        System.out.println(bookRepository.updateCategories());
+        bookRepository.findAllCustom().forEach(System.out::println);
+    }
+
+    @Test
+    void converterTest() {
+        bookRepository.findAll().forEach(System.out::println);
+
+        Book book = new Book();
+        book.setName("또다른 IT전문서적");
+        book.setStatus(new BookStatus(200));
+
+        bookRepository.save(book);
+        System.out.println(bookRepository.findRawRecord().values());
     }
 
 

@@ -1,6 +1,8 @@
 package com.data.jpa.datajpa.domain;
 
+import com.data.jpa.datajpa.domain.converter.BookStatusConverter;
 import com.data.jpa.datajpa.domain.listener.Auditable;
+import com.data.jpa.datajpa.repository.dto.BookStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -61,6 +63,10 @@ public class Book extends BaseEntity {
     }
 
     private boolean deleted;
+
+//    @Convert(converter = BookStatusConverter.class)
+    private BookStatus status; // 판매상태
+
 
     //현업에서는
 //    public void addAuthor(Author... author) {
