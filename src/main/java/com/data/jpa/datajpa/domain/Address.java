@@ -1,13 +1,25 @@
 package com.data.jpa.datajpa.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity
+@Embeddable
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Address {
+    private String city; // ㅅㅣ
+    private String district;  // 구
 
-    @Id
-    private Long id;
+    @Column(name = "address_detail")
+    private String detail; // 상세주소
 
+    private String zipCode; // 우편번호
 
 }

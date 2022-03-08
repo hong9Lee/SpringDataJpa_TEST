@@ -1,24 +1,29 @@
 package com.data.jpa.datajpa.repository;
 
+import com.data.jpa.datajpa.domain.Address;
 import com.data.jpa.datajpa.domain.Gender;
 import com.data.jpa.datajpa.domain.User;
 import com.data.jpa.datajpa.domain.UserHistory;
-import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.contains;
-import static org.springframework.data.domain.ExampleMatcher.GenericPropertyMatchers.endsWith;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 
 @SpringBootTest
 @Transactional
 class UserRepositoryTest {
+
+    @Autowired
+    private EntityManager em;
 
     @Autowired
     private UserRepository userRepository;
@@ -289,5 +294,45 @@ class UserRepositoryTest {
                 Sort.Order.desc("id"),
                         Sort.Order.asc("email")
         );
+    }
+
+
+
+    @Test
+    void embedTest() {
+//        userRepository.findAll().forEach(System.out::println);
+
+        User user = new User();
+        user.setName("steve");
+        user.setHomeAddress(new Address("서울시", "강남구", "강남대로 365 미왕빌딩", "06241"));
+        user.setCompanyAddress(new Address("서울시", "성동구", "성수대로 3123", "06241"));
+
+        userRepository.save(user);
+
+
+        User user1 = new User();
+        user1.setName("hoshua");
+        user1.setHomeAddress(null);
+        user1.setCompanyAddress(null);
+        userRepository.save(user1);
+
+        User user2 = new User();
+        user2.setName("jordan");
+        user2.setHomeAddress(new Address());
+        user2.setCompanyAddress(new Address());
+        userRepository.save(user2);
+
+//        em.clear();
+
+//        userRepository.findAll().forEach(System.out::println);
+//        userHistoryRepository.findAll().forEach(System.out::println);
+
+        userRepository.findAllRowRecord().forEach(a -> System.out.println(a.values()));
+
+        assertAll(
+                () ->  assertThat(userRepository.findById(7L).get().getHomeAddress()).isNull(),
+                () ->  assertThat(userRepository.findById(8L).get().getHomeAddress()).isInstanceOf(Address.class)
+        );
+
     }
 }

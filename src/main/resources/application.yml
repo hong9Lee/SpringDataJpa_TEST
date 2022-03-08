@@ -20,3 +20,6 @@ spring:
     initialization-mode: always # data.sql loding
 server:
   port: 8070
+logging:
+  level:
+    root: trace
